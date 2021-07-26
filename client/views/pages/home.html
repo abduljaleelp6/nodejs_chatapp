@@ -1,0 +1,345 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.js"></script>
+    <style>
+        body {
+            /*I ripped this image from the WhatsApp apk*/
+            /*This is WhatsApp's official BK color*/
+            background: #ece5dd;
+            font-family: "Helvetica Neue", Helvetica;
+        }
+        
+        .container {
+            width: 75%;
+            margin: 0 auto;
+        }
+        
+        .msg {
+            width: 100%;
+            height: auto;
+            display: block;
+            overflow: hidden;
+        }
+        
+        .msg .bubble {
+            float: left;
+            max-width: 75%;
+            width: auto;
+            height: auto;
+            display: block;
+            background: #ebebeb;
+            border-radius: 5px;
+            position: relative;
+            margin: 10px 0 3px 25px;
+            box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .msg .bubble.alt {
+            margin: 10px 25px 3px 0px;
+            background: #dcf8c6;
+            float: right;
+        }
+        
+        .msg .bubble.follow {
+            margin: 2px 0 3px 25px;
+        }
+        
+        .msg .bubble.altfollow {
+            margin: 2px 25px 3px 0px;
+            background: #dcf8c6;
+            float: right;
+        }
+        
+        .msg .bubble .txt {
+            padding: 8px 0 8px 0;
+            width: 100%;
+        }
+        
+        .msg .bubble .txt .name {
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-table;
+            padding: 0 0 0 15px;
+            margin: 0 0 4px 0;
+            color: #3498db;
+        }
+        
+        .msg .bubble .txt .name span {
+            font-weight: normal;
+            color: #b3b3b3;
+            overflow: hidden;
+        }
+        
+        .msg .bubble .txt .name.alt {
+            color: #2ecc51;
+        }
+        
+        .msg .bubble .txt .message {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 0 15px 0 15px;
+            margin: auto;
+            color: #2b2b2b;
+            display: table;
+        }
+        
+        .msg .bubble .txt .timestamp {
+            font-size: 11px;
+            margin: auto;
+            padding: 0 15px 0 0;
+            display: table;
+            float: right;
+            position: relative;
+            text-transform: uppercase;
+            color: #999;
+        }
+        
+        .msg .bubble .bubble-arrow {
+            position: absolute;
+            float: left;
+            left: -11px;
+            top: 0px;
+        }
+        
+        .msg .bubble .bubble-arrow.alt {
+            bottom: 20px;
+            left: auto;
+            right: 4px;
+            float: right;
+        }
+        
+        .msg .bubble .bubble-arrow:after {
+            content: "";
+            position: absolute;
+            border-top: 15px solid #ebebeb;
+            border-left: 15px solid transparent;
+            border-radius: 4px 0 0 0px;
+            width: 0;
+            height: 0;
+        }
+        
+        .msg .bubble .bubble-arrow.alt:after {
+            border-top: 15px solid #dcf8c6;
+            transform: scaleX(-1);
+        }
+        
+        @media only screen and (max-width: 450px) {
+            .container {
+                width: 100%;
+            }
+            .timestamp {
+                display: none;
+                color: red;
+            }
+        }
+    </style>
+
+
+</head>
+<!--Coded With Love By Mutiullah Samim-->
+
+<body>
+    <div class="home-header">
+        <p class="welcome-user">Welcome {{ data.username }}</p>
+        <div class="img_cont">
+            <img src="https://bewithcollab.com/{{data.business_logo}}" class="rounded-circle user_img">
+            <span class="online_icon"></span>
+        </div>
+        <span class="logout-user" ng-click="logout()">
+            <i class="fa fa-power-off" aria-hidden="true"></i>
+        </span>
+    </div>
+
+    <div class="container-fluid h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-md-4 col-xl-3 chat">
+                <div class="card mb-sm-3 mb-md-0 contacts_card">
+                    <div class="card-header">
+                        <div class="input-group">
+                            <input type="text" placeholder="Search..." name="" class="form-control search">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body contacts_body">
+                        <ui class="contacts">
+                            <p class="chat-list-heading"><i class="fa fa-list" aria-hidden="true"></i> <span>Chat list</span> </p>
+                            <li class="active" ng-repeat="friend in data.chatlist" ng-click="selectFriendToChat(friend.id)" ng-class="{'active':friend.id == data.selectedFriendId}">
+                                <div class="d-flex bd-highlight">
+                                    <div class="img_cont">
+                                        <img src="https://bewithcollab.com/{{friend.business_logo}}" class="rounded-circle user_img">
+                                        <span class="online_icon"></span>
+                                    </div>
+                                    <div class="user_info">
+                                        <span>{{friend.business_name}}</span>
+                                        <p>Online</p>
+                                    </div>
+                                </div>
+                            </li>
+
+
+
+
+                        </ui>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+            <div class="col-md-8 col-xl-6 chat">
+                <div class="card">
+                    <div class="card-header msg_head">
+                        <div class="d-flex bd-highlight">
+                            <div class="img_cont">
+                                <img src="https://bewithcollab.com/{{data.selectedFriendImg}}" class="rounded-circle user_img">
+                                <span class="online_icon"></span>
+                            </div>
+                            <div class="user_info">
+                                <span>{{data.selectedFriendName}}</span>
+                                <!--<p>1767 Messages</p>-->
+                            </div>
+                            <!--<div class="video_cam">
+                                <span><i class="fas fa-video"></i></span>
+                                <span><i class="fas fa-phone"></i></span>
+                            </div>-->
+                        </div>
+                        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+                        <div class="action_menu">
+                            <ul>
+                                <li><i class="fas fa-user-circle"></i> Clear</li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body msg_card_body message-thread" style="background: #ece5dd;">
+
+
+
+                        <!-- With Name and Arrow - LEFT -->
+                        <div class="msg" ng-repeat="messagePacket in data.messages">
+                            <div class="bubble" ng-class="{ 'alt' : alignMessage(messagePacket.fromUserId) } ">
+                                <div class="txt">
+
+                                    <span class="timestamp">10:20 pm <i class="" ng-class="{ 'fas fa-check-double' : alignMessage(messagePacket.fromUserId) } "></i></span>
+                                    <span class="message">
+                                            {{messagePacket.message}}
+                                           
+                                  </span>
+
+                                </div>
+                                <div class="bubble-arrow" ng-class="{ 'alt' : alignMessage(messagePacket.fromUserId) } "></div>
+                            </div>
+                        </div>
+
+
+                        <!--<div class="d-flex justify-content-start mb-4" ng-repeat="messagePacket in data.messages" ng-class="{ 'justify-content-end' : alignMessage(messagePacket.fromUserId) } ">
+                            <div class="msg_cotainer" ng-class="{ 'msg_cotainer_send' : alignMessage(messagePacket.fromUserId) } ">
+                                {{messagePacket.message}} 8:55 AM
+
+                            </div>
+                          
+                        </div>-->
+
+
+                    </div>
+                    <div class="card-footer">
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
+                            </div>
+                            <textarea id="message" name="" class="form-control type_msg" placeholder="Type your message..." ng-keydown="sendMessage($event)"></textarea>
+                            <div class="input-group-append">
+                                <span class="input-group-text type_msg"><a ng-click="sendMessage($event)"><i class="fas fa-location-arrow"></i></a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- 
+             <div class="container">
+                <div class="msg">
+                    <div class="bubble">
+                        <div class="txt">
+                            <span class="timestamp">10:21 pm</span>
+                            <span class="message">test </span>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="msg">
+                    <div class="bubble alt">
+                        <div class="txt">
+                            <span class="name alt">My Name
+                      </span>
+                            <span class="timestamp">10:22 pm</span>
+                            <p class="message">It's nuts, dude. Nuts</p>
+                        </div>
+                        <div class="bubble-arrow alt"></div>
+                    </div>
+                </div>
+
+               
+                <div class="msg">
+                    <div class="bubble">
+                        <div class="txt">
+                            <span class="name">+353 87 1234 567<span> ~ John</span></span>
+                            <span class="timestamp">10:20 pm</span>
+                            <p class="message">Hey, check out this Pure CSS speech bubble...</p>
+                        </div>
+                        <div class="bubble-arrow"></div>
+                    </div>
+                </div>
+
+               
+                <div class="msg">
+                    <div class="bubble altfollow">
+                        <div class="txt">
+                            <span class="timestamp">10:22 pm</span>
+                            <p class="message follow">Nice... this will work great for my new project.</p>
+                        </div>
+                        <div class="bubble-arrow alt"></div>
+                    </div>
+                </div>
+
+              
+                <div class="msg">
+                    <div class="bubble altfollow">
+                        <div class="txt">
+                            <span class="timestamp">10:21 pm</span>
+                            <p class="message follow">
+                                Thanks Benni! You the real mvp
+                            </p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>-->
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#action_menu_btn').click(function() {
+                $('.action_menu').toggle();
+            });
+        });
+    </script>
+</body>
+
+</html>
